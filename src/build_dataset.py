@@ -182,6 +182,22 @@ ROWS = [
     ["Essam El-Hadary", "Egypt", 2018, 45, 45, "group", 1, 90, 3, 0, 2, NA,
      1, 0, 0, "Al-Taawoun", "Saudi Pro League", "non_euro", 0.1, "Al-Taawoun", 0, 0, NA, 0.1,
      "med", "Oldest player in WC history; saved a pen; age 45, no move"],
+    # ---- additional documented keeper-tournaments (dataset expansion) ----
+    ["Claudio Bravo", "Chile", 2014, 31, 14, "r16", 4, 360, 4, 1, 12, NA,
+     0, 0, 0, "Real Sociedad", "La Liga", "top5", 8.0, "Barcelona", 1, 1, 12.0, 14.0,
+     "med", "Chile R16 (lost pens to Brazil); moved Real Sociedad->Barcelona ~€12m, Jul 2014"],
+    ["Jung Sung-ryong", "South Korea", 2010, 25, 47, "r16", 4, 360, 8, 1, 14, NA,
+     0, 0, 0, "Seongnam Ilhwa", "K League 1", "non_euro", 0.8, "Seongnam Ilhwa", 0, 0, NA, 1.0,
+     "low", "R16 run; clean sheet vs Greece; stayed in K League, no European move"],
+    ["Diego Benaglio", "Switzerland", 2010, 26, 24, "group", 3, 270, 1, 1, 10, NA,
+     0, 0, 0, "VfL Wolfsburg", "Bundesliga", "top5", 6.0, "VfL Wolfsburg", 0, 0, NA, 6.0,
+     "low", "Clean sheet in 1-0 win over eventual champions Spain; stayed at Wolfsburg"],
+    ["Robert Green", "England", 2010, 30, 8, "group", 1, 90, 1, 0, 2, NA,
+     0, 0, 0, "West Ham United", "Premier League", "top5", 6.0, "West Ham United", 0, 0, NA, 4.0,
+     "low", "Infamous fumble vs USA; dropped afterwards - error, not a breakout"],
+    ["Carlos Kameni", "Cameroon", 2014, 30, 56, "group", 3, 270, 9, 0, 11, NA,
+     0, 0, 0, "Malaga", "La Liga", "top5", 3.0, "Malaga", 0, 0, NA, 2.5,
+     "low", "Cameroon group exit (conceded 9); stayed at Malaga, no move"],
 ]
 
 # ---------------------------------------------------------------------------

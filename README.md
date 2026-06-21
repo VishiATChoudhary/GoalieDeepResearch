@@ -12,21 +12,21 @@ World Cup dashboard ranking which keepers are likeliest to break out.
 
 1. **Age is the single dominant driver** of whether a World Cup performance converts into a
    better move — more than any on-pitch stat. It is the top feature in the random forest and
-   is robust across every leave-one-tournament-out fold. Equally heroic *older* keepers
+   tops four of five leave-one-tournament-out folds. Equally heroic *older* keepers
    (Subašić 33, Howard 35, Akinfeev 32, Gonda 33) got reputation but **no move**; the
    converters were young/marketable (Navas 27, Kawashima 27, Neuer 24, Ospina 25).
 2. **The smaller-nation "shop window" is real but conditional — and mostly a proxy.** The
    mechanism (information asymmetry — an under-scouted keeper's value moves more on new
    information) is strongly supported by case studies (Keylor Navas → Real Madrid; Bono →
-   Al-Hilal ~€21m; Kawashima → Belgium). But in our n=40 sample the *binary* success rate is
-   similar across tiers (~33%), the smaller-vs-elite value-growth gap is **not** significant
-   (Mann–Whitney p≈0.87), and in a Ridge model of value-growth *magnitude* the controlled
-   `non_elite_nation` effect is **≈0 once age, base value, and actual shot-stopping (save %,
-   goals conceded) are included**. In other words the "smaller-nation premium" is largely an
-   *age + under-valuation + performance* effect wearing a nationality costume; the real bumps
-   go to **young, cheap, well-performing** keepers — who happen, in the tail, to be from
-   non-elite nations.
-3. **Tournament keeping has low predictive signal** (model ROC-AUC ≈ 0.60). This is itself a
+   Al-Hilal ~€21m; Kawashima → Belgium). But in our n=45 sample the *binary* success rate is
+   similar across tiers (~27–36%), the smaller-vs-elite value-growth gap is **not** significant
+   (Mann–Whitney p≈0.72), and in a Ridge model of value-growth *magnitude* the controlled
+   `non_elite_nation` effect is **small (+1.7 per SD), dwarfed by age, base value, and actual
+   shot-stopping (save %, goals conceded)**. In other words the "smaller-nation premium" is
+   mostly an *age + under-valuation + performance* effect wearing a nationality costume, with a
+   minor genuine premium left over; the real bumps go to **young, cheap, well-performing**
+   keepers — who happen, in the tail, to be from non-elite nations.
+3. **Tournament keeping has low predictive signal** (model ROC-AUC ≈ 0.55). This is itself a
    documented finding (shot-stopping barely repeats season-to-season), and it is exactly the
    market inefficiency the shop-window effect exploits — markets overweight a few vivid saves.
 
@@ -39,7 +39,7 @@ See [`research/REPORT.md`](research/REPORT.md) for the full cited synthesis and
 research/REPORT.md            Cited deep-research synthesis (mechanism, metrics, case studies)
 data/
   DATA_DICTIONARY.md          Schema + nation-tiering rules + sourcing notes
-  goalkeepers_worldcups.csv   40 keeper-tournaments, 2006–2022 (built by src/build_dataset.py)
+  goalkeepers_worldcups.csv   45 keeper-tournaments, 2006–2022 (built by src/build_dataset.py)
   goalkeepers_2026.csv        Live 2026 keeper pool with current group-stage stats
   WC2026_current_stats.md     Live 2026 goalkeeper stats table + per-keeper sourcing
   fifa_rankings.csv           Pre-tournament nation ranks used for tiering
@@ -115,4 +115,4 @@ FIFA/Wikipedia/journalism (see every agent's sources in `research/REPORT.md`). S
 - Market values are approximate and used only for a coarse growth signal; the analysis is
   stress-tested against the value threshold.
 
-n=40 is small; treat the modelling as *explanatory and ranking-oriented*, not predictive.
+n=45 is small; treat the modelling as *explanatory and ranking-oriented*, not predictive.
