@@ -49,6 +49,33 @@ played meaningful minutes), for the last five completed tournaments: **2006, 201
 | `mv_growth_pct` | float | Percentage market-value change after the WC |
 | `showcase_success` | int | **Primary target.** 1 if the keeper earned a clear post-WC upgrade — defined as `move_up==1` OR `mv_growth_pct >= 50` |
 
+#### Real-data columns (StatsBomb enrichment, 2018 & 2022 only)
+For 2018 and 2022 keeper rows, `saves`, `save_pct`, `goals_conceded` and `pen_saves` are
+**overwritten with measured values** computed from StatsBomb open event data (see
+`src/ingest_statsbomb.py`), and two columns are added:
+
+| column | type | description |
+|---|---|---|
+| `xg_prevented` | float | Sum of pre-shot xG of on-target shots faced minus goals conceded (open play + in-game pens; shootouts excluded). A real but coarser cousin of PSxG-GA — labelled to avoid overstating it. NaN for 2006–2014. |
+| `sot_faced` | int | On-target shots faced (StatsBomb), open play + in-game penalties. NaN for 2006–2014. |
+
+Such rows carry `data_confidence = "high (StatsBomb)"`. `pen_saves` for these rows includes
+shootout saves (e.g. Subašić 4, Schmeichel 3, Bono 2).
+
+### `statsbomb_gk_metrics.csv` (in `data/processed/`)
+Raw per-keeper StatsBomb aggregates for 2018 & 2022: `matches`, `sot_faced`, `saves`,
+`goals_conceded`, `xg_faced`, `pen_saves`, `so_pen_saves` (shootout pen saves), `save_pct`,
+`xg_prevented`. Produced by `src/ingest_statsbomb.py`; the build step overlays the relevant
+rows onto `goalkeepers_worldcups.csv`.
+
+### `goalkeepers_2026.csv` — added live-stat columns
+Beyond the pre-tournament context, the 2026 pool carries **current group-stage stats** (as of
+2026-06-21): `matches`, `minutes`, `saves`, `goals_conceded`, `clean_sheets`, `pen_saves`,
+plus `sofascore_rating`, `goals_prevented` (Opta/Sofascore post-shot, where published), and
+`stats_conf` (`high` corroborated / `approx` some save totals inferred). Full per-keeper
+sourcing is in `data/WC2026_current_stats.md`. Note actual starters are used (e.g. Al-Owais,
+Muslera, Mosquera), which can differ from the pre-tournament presumed #1.
+
 ### `fifa_rankings.csv`
 Reference of FIFA rankings used to bucket nations into tiers per tournament.
 

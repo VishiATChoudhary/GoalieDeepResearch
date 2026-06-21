@@ -17,91 +17,91 @@ Dataset: 40 goalkeeper-tournament rows across 5 World Cups (2006–2022).
 ### Cross-validated performance (honest, small-sample)
 
 ```
-logit    acc=0.57  roc_auc=0.58  base_rate=0.35  n=40
-forest   acc=0.53  roc_auc=0.60  base_rate=0.35  n=40
+logit    acc=0.62  roc_auc=0.66  base_rate=0.35  n=40
+forest   acc=0.70  roc_auc=0.65  base_rate=0.35  n=40
 ```
 
 ### Logistic-regression coefficients (standardized; sign = direction)
 
 | feature            |   coef |
 |:-------------------|-------:|
-| team_stage_rank    | -0.837 |
-| age_at_wc          | -0.731 |
-| club_pre_tier_rank | -0.61  |
-| fifa_rank_pre      | -0.416 |
-| save_pct           |  0.338 |
-| clean_sheets       |  0.3   |
-| ga_per90           | -0.216 |
-| goals_conceded     |  0.199 |
-| pen_saves          | -0.187 |
-| mv_pre_eur_m       |  0.179 |
-| matches            |  0.166 |
-| minutes            | -0.101 |
-| saves_per90        | -0.058 |
-| saves              | -0.055 |
+| age_at_wc          | -0.963 |
+| team_stage_rank    | -0.898 |
+| clean_sheets       |  0.583 |
+| club_pre_tier_rank | -0.542 |
+| save_pct           | -0.484 |
+| saves_per90        | -0.44  |
+| pen_saves          | -0.32  |
+| ga_per90           | -0.285 |
+| minutes            | -0.223 |
+| saves              |  0.216 |
+| fifa_rank_pre      | -0.212 |
+| goals_conceded     |  0.192 |
+| mv_pre_eur_m       |  0.157 |
+| matches            | -0.025 |
 
 ### Random-forest permutation importance (ROC-AUC drop)
 
 | feature            |   perm_importance |   perm_std |
 |:-------------------|------------------:|-----------:|
-| age_at_wc          |            0.0747 |     0.0305 |
-| saves_per90        |            0.0138 |     0.0066 |
-| save_pct           |            0.0112 |     0.0062 |
-| saves              |            0.0081 |     0.003  |
-| fifa_rank_pre      |            0.0042 |     0.0037 |
-| mv_pre_eur_m       |            0.0034 |     0.004  |
-| minutes            |            0.0019 |     0.0018 |
-| club_pre_tier_rank |            0.0016 |     0.0021 |
-| ga_per90           |            0.0015 |     0.0036 |
-| matches            |            0.001  |     0.0013 |
-| pen_saves          |            0.0009 |     0.0029 |
-| goals_conceded     |            0.0005 |     0.0026 |
-| team_stage_rank    |            0      |     0.002  |
-| clean_sheets       |           -0.0014 |     0.0017 |
+| age_at_wc          |            0.127  |     0.0484 |
+| save_pct           |            0.0262 |     0.0058 |
+| saves              |            0.0166 |     0.0058 |
+| mv_pre_eur_m       |            0.0159 |     0.0045 |
+| ga_per90           |            0.0155 |     0.0075 |
+| saves_per90        |            0.0137 |     0.0053 |
+| fifa_rank_pre      |            0.0125 |     0.005  |
+| minutes            |            0.0102 |     0.0041 |
+| goals_conceded     |            0.0093 |     0.0044 |
+| club_pre_tier_rank |            0.0082 |     0.0048 |
+| matches            |            0.0061 |     0.0034 |
+| team_stage_rank    |            0.0054 |     0.004  |
+| pen_saves          |            0.0045 |     0.0045 |
+| clean_sheets       |            0.0025 |     0.0035 |
 
 ## 4. What drives the *size* of the post-WC value bump
 
-Ridge regression on market-value growth % (standardized features), n=39, cross-validated R²=-0.76 (small sample — interpret signs/ranking, not fit).
+Ridge regression on market-value growth % (standardized features), n=39, cross-validated R²=-0.49 (small sample — interpret signs/ranking, not fit).
 
 | feature            |   ridge_coef_per_sd |
 |:-------------------|--------------------:|
-| age_at_wc          |               -8.58 |
-| goals_conceded     |               -6.04 |
-| save_pct           |                4.22 |
-| pen_saves          |               -3.31 |
-| mv_pre_eur_m       |               -3.16 |
-| club_pre_tier_rank |               -3.08 |
-| ga_per90           |               -2.8  |
-| saves_per90        |                2.74 |
-| team_stage_rank    |               -2.63 |
-| minutes            |               -2.06 |
-| matches            |               -1.94 |
-| fifa_rank_pre      |                1.93 |
-| clean_sheets       |                0.6  |
-| non_elite_nation   |                0.23 |
-| saves              |                0.12 |
+| age_at_wc          |               -9.16 |
+| goals_conceded     |               -5.78 |
+| pen_saves          |               -4.42 |
+| ga_per90           |               -3.63 |
+| team_stage_rank    |               -3.08 |
+| mv_pre_eur_m       |               -3.07 |
+| save_pct           |                2.77 |
+| club_pre_tier_rank |               -2.72 |
+| minutes            |               -2.19 |
+| matches            |               -1.98 |
+| fifa_rank_pre      |                1.58 |
+| saves_per90        |                1.11 |
+| non_elite_nation   |                0.85 |
+| saves              |               -0.68 |
+| clean_sheets       |                0.57 |
 
-*The `non_elite_nation` coefficient (`+0.2` pp of value growth per SD, after controlling for age/club/performance) is the smaller-nation 'showcase premium'. It is small relative to the shot-stopping and age effects — i.e. once you account for how well a keeper actually played and how old they are, nationality adds little to the value bump.*
+*The `non_elite_nation` coefficient (`+0.9` pp of value growth per SD, after controlling for age/club/performance) is the smaller-nation 'showcase premium'. It is small relative to the shot-stopping and age effects — i.e. once you account for how well a keeper actually played and how old they are, nationality adds little to the value bump.*
 
 ### Gradient-boosted permutation importance for value growth
 
 | feature            |   perm_importance_r2 |
 |:-------------------|---------------------:|
-| save_pct           |               0.4794 |
-| saves_per90        |               0.2985 |
-| age_at_wc          |               0.2823 |
-| fifa_rank_pre      |               0.0961 |
-| saves              |               0.0911 |
-| mv_pre_eur_m       |               0.0447 |
-| ga_per90           |               0.0324 |
-| club_pre_tier_rank |               0.0265 |
-| team_stage_rank    |               0.0088 |
-| minutes            |               0.0069 |
-| clean_sheets       |               0.003  |
-| goals_conceded     |               0.0018 |
-| pen_saves          |               0.0009 |
+| save_pct           |               0.6146 |
+| age_at_wc          |               0.3939 |
+| mv_pre_eur_m       |               0.1313 |
+| fifa_rank_pre      |               0.1225 |
+| saves_per90        |               0.0811 |
+| ga_per90           |               0.0743 |
+| club_pre_tier_rank |               0.0245 |
+| clean_sheets       |               0.0113 |
+| pen_saves          |               0.0079 |
+| saves              |               0.0065 |
+| minutes            |               0.0059 |
+| team_stage_rank    |               0.0031 |
+| non_elite_nation   |               0.0005 |
 | matches            |               0.0005 |
-| non_elite_nation   |               0.0001 |
+| goals_conceded     |               0.0003 |
 
 ## 3. Sensitivity analysis
 
@@ -129,8 +129,8 @@ Ridge regression on market-value growth % (standardized features), n=39, cross-v
 
 |   held_out_year | top_feature   |   importance |
 |----------------:|:--------------|-------------:|
-|            2006 | age_at_wc     |       0.0458 |
-|            2010 | age_at_wc     |       0.0301 |
-|            2014 | age_at_wc     |       0.0352 |
-|            2018 | age_at_wc     |       0.0142 |
-|            2022 | age_at_wc     |       0.1255 |
+|            2006 | age_at_wc     |       0.0755 |
+|            2010 | age_at_wc     |       0.0496 |
+|            2014 | age_at_wc     |       0.0465 |
+|            2018 | age_at_wc     |       0.0212 |
+|            2022 | age_at_wc     |       0.1333 |

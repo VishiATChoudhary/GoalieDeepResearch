@@ -40,12 +40,17 @@ research/REPORT.md            Cited deep-research synthesis (mechanism, metrics,
 data/
   DATA_DICTIONARY.md          Schema + nation-tiering rules + sourcing notes
   goalkeepers_worldcups.csv   40 keeper-tournaments, 2006–2022 (built by src/build_dataset.py)
-  goalkeepers_2026.csv        Live 2026 keeper pool (edit to refresh the dashboard)
+  goalkeepers_2026.csv        Live 2026 keeper pool with current group-stage stats
+  WC2026_current_stats.md     Live 2026 goalkeeper stats table + per-keeper sourcing
   fifa_rankings.csv           Pre-tournament nation ranks used for tiering
+  processed/
+    statsbomb_gk_metrics.csv  REAL shot-based GK metrics (2018 & 2022) from StatsBomb open data
 src/
   features.py                 Tiering, derived columns, save% proxy, feature matrix
   model.py                    Logistic + random-forest models, permutation importance, scoring
-  build_dataset.py            Builds the CSVs from the research synthesis (provenance in code)
+  ingest_statsbomb.py         Downloads StatsBomb open data → real saves/save%/xG-prevented (2018/22)
+  ingest_fbref.py             Documented FBref scaffold (403-blocked here; for when network allows)
+  build_dataset.py            Builds the CSVs; overlays real StatsBomb metrics onto 2018/22 rows
 analysis/
   run_analysis.py             End-to-end analysis (descriptive, drivers, sensitivity)
   ANALYSIS_RESULTS.md         Generated results
@@ -86,8 +91,17 @@ streamlit run dashboard/app.py
 
 ## Data honesty & limitations
 
-This is a **curated, research-backed dataset**, not a scrape — Transfermarkt and most data
-aggregators block automated fetching, so figures come from a cross-checked research pass over
+**Real-data layer.** The 2018 and 2022 keeper rows are enriched with *measured* shot-based
+metrics (saves, save%, goals conceded, shootout saves, and a real `xg_prevented`) computed
+from **StatsBomb open event data** via `src/ingest_statsbomb.py` — these rows are flagged
+`data_confidence = "high (StatsBomb)"`. FBref's PSxG pages (the ideal metric) are 403-blocked
+in this environment, so `src/ingest_fbref.py` is provided as a ready-to-run scaffold for where
+FBref is reachable. The **2026 rows carry live group-stage stats** (see
+`data/WC2026_current_stats.md`).
+
+The remaining figures (2006–2014 performance, all market values/transfers) are a
+**curated, research-backed dataset**, not a scrape — Transfermarkt and most data aggregators
+block automated fetching, so they come from a cross-checked research pass over
 FIFA/Wikipedia/journalism (see every agent's sources in `research/REPORT.md`). Specifically:
 
 - Match counts, clean sheets, goals conceded, team stage, penalty/shootout saves, and the

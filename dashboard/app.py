@@ -113,8 +113,33 @@ def main() -> None:
         view = view[view["nation_tier"].isin(["smaller", "mid"])]
     view = view.sort_values("breakout_score", ascending=False)
 
+    # --- Live current-tournament stats (the 2026 World Cup so far) ---
+    st.subheader("📡 Live 2026 group-stage stats (as of 2026-06-21)")
+    st.caption("Current-tournament goalkeeper performance. See `data/WC2026_current_stats.md` "
+               "for per-keeper sourcing. `approx` = some save totals inferred from match context.")
+    live_cols = ["player", "nation", "nation_tier", "matches", "saves",
+                 "goals_conceded", "clean_sheets", "sofascore_rating",
+                 "goals_prevented", "stats_conf"]
+    live = view[[c for c in live_cols if c in view.columns]].sort_values(
+        "saves", ascending=False)
+    st.dataframe(
+        live.rename(columns={"goals_conceded": "GC", "clean_sheets": "CS",
+                             "sofascore_rating": "Sofascore", "matches": "M",
+                             "goals_prevented": "goals prev.", "stats_conf": "conf"}),
+        use_container_width=True, hide_index=True,
+    )
+    c1, c2, c3 = st.columns(3)
+    c1.metric("Most saves so far", f"{int(live['saves'].max())}",
+              live.iloc[0]["player"])
+    cs_leader = view.sort_values(["clean_sheets", "saves"], ascending=False).iloc[0]
+    c2.metric("Most clean sheets", f"{int(view['clean_sheets'].max())}",
+              cs_leader["player"])
+    rate_leader = view.sort_values("sofascore_rating", ascending=False).iloc[0]
+    c3.metric("Top Sofascore rating", f"{rate_leader['sofascore_rating']:.1f}",
+              rate_leader["player"])
+
     # --- Top-line ranking ---
-    st.subheader("Breakout likelihood ranking")
+    st.subheader("🔮 Breakout likelihood ranking")
     show_cols = ["player", "nation", "nation_tier", "age_at_wc", "fifa_rank_pre",
                  "club_pre", "mv_pre_eur_m", "saves", "clean_sheets",
                  "model_prob", "upside", "form", "breakout_score"]

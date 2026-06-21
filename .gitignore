@@ -20,3 +20,7 @@ env/
 # Keep processed data and figures tracked (they are deliverables),
 # but ignore large/temp scratch files
 /tmp_scratch/
+
+# Large reproducible raw download cache (StatsBomb event JSON, ~375MB).
+# Regenerate with: python src/ingest_statsbomb.py
+data/raw/statsbomb/

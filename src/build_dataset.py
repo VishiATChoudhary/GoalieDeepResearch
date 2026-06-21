@@ -25,6 +25,7 @@ Provenance & honesty notes
 """
 from __future__ import annotations
 
+import unicodedata
 from pathlib import Path
 
 import numpy as np
@@ -193,66 +194,153 @@ ROWS = [
 COLS_2026 = [
     "player", "nation", "age_at_wc", "fifa_rank_pre", "club_pre", "league_pre",
     "club_pre_tier", "mv_pre_eur_m", "matches", "minutes", "goals_conceded",
-    "clean_sheets", "saves", "pen_saves", "team_stage", "storyline",
+    "clean_sheets", "saves", "pen_saves", "sofascore_rating", "goals_prevented",
+    "team_stage", "stats_conf", "storyline",
 ]
 
+# Live group-stage stats as of 2026-06-21 (researched from ESPN/Sofascore/FIFA/
+# Opta/Sky match reports — see data/WC2026_current_stats.md for per-keeper
+# sourcing). `stats_conf`: 'high' = corroborated counts; 'approx' = some save
+# counts inferred where outlets didn't publish a discrete total; values marked
+# approx are best estimates from match context, not fabricated precision.
+# goals_prevented = Opta/Sofascore post-shot goals-prevented where published, else NaN.
 ROWS_2026 = [
-    # smaller / debutant nations (the focus)
+    # ---- smaller / debutant nations (the focus) ----
     ["Vozinha", "Cape Verde", 40, 73, "free agent", "-", "non_euro", 0.1,
-     1, 90, 0, 1, 7, 0, "group", "40yo debutant; 7 saves to hold Spain 0-0; viral breakout"],
+     1, 90, 0, 1, 7, 0, 9.7, 1.46, "group", "high",
+     "40yo debutant; 7 saves to hold Spain 0-0 (MotM, 9.7); viral breakout"],
     ["Eloy Room", "Curacao", 37, 82, "Miami FC", "USL Championship", "non_euro", 0.2,
-     2, 180, 7, 1, 15, 0, "group", "Smallest nation ever to qualify; 15 saves in 0-0 vs Ecuador (tied Howard record)"],
+     2, 180, 7, 1, 19, 0, 7.5, 2.48, "group", "high",
+     "Smallest nation ever to qualify; 15 saves & a 10.0 vs Ecuador (tied Howard record)"],
     ["Yassine Bono", "Morocco", 35, 11, "Al-Hilal", "Saudi Pro League", "non_euro", 3.5,
-     1, 90, 1, 0, 3, 0, "group", "2025 CAF GK of the Year; 2022 semifinal hero"],
+     2, 180, 1, 1, 4, 0, 7.0, 0.49, "group",  "high",
+     "2022 semifinal hero; CS vs Scotland, Morocco top of Group C"],
     ["Max Crocombe", "New Zealand", 32, 89, "Millwall", "Championship", "other_euro", 1.0,
-     1, 90, 1, 0, 4, 0, "group", "Led Championship in save%; OFC's first direct WC berth"],
+     1, 90, 2, 0, 2, 0, 6.1, NA, "group", "high",
+     "OFC's first direct WC berth; 2-2 draw vs Iran"],
     ["Yazeed Abulaila", "Jordan", 33, 62, "Al-Hussein", "Jordanian Pro League", "non_euro", 0.3,
-     1, 90, 1, 0, 3, 0, "group", "Debutant; reached 2023 Asian Cup final"],
+     1, 90, 2, 0, 1, 0, 6.2, NA, "group", "high",
+     "Debutant; lost 1-3 to Austria"],
     ["Utkir Yusupov", "Uzbekistan", 35, 57, "Navbahor", "Uzbek Super League", "non_euro", 0.5,
-     1, 90, 0, 1, 4, 0, "group", "Debutant; 10 clean sheets in qualifying"],
+     1, 90, 3, 0, 2, 0, 5.0, NA, "group", "approx",
+     "Debutant; conceded 3 vs Colombia (criticised), save count unconfirmed"],
     ["Lionel Mpasi", "DR Congo", 31, 60, "Le Havre", "Ligue 1", "top5", 0.4,
-     1, 90, 1, 0, 5, 0, "group", "DR Congo's return after 52 years; Ligue 1 keeper"],
+     1, 90, 1, 0, 0, 0, 6.7, -0.47, "group", "high",
+     "DR Congo's return after 52 years; 'no saves to make' in 1-1 vs Portugal"],
     ["Ronwen Williams", "South Africa", 34, 58, "Mamelodi Sundowns", "PSL", "non_euro", 0.9,
-     1, 90, 1, 0, 4, 0, "group", "Saved 4 pens in AFCON 2024 QF shootout (record)"],
+     2, 180, 3, 0, 8, 0, 6.2, NA, "group", "approx",
+     "Captain; 3 GC over 2 games, save totals partly unconfirmed"],
     ["Benjamin Asare", "Ghana", 33, 70, "Hearts of Oak", "Ghana PL", "non_euro", 0.1,
-     1, 45, 0, 1, 2, 0, "group", "First home-based GK to feature for Ghana at a WC"],
+     1, 45, 0, 1, 3, 0, 8.2, NA, "group", "high",
+     "First home-based GK to keep a WC clean sheet for Ghana (on debut, 45 min)"],
     ["Luca Zidane", "Algeria", 28, 32, "Granada", "Segunda Division", "other_euro", 1.0,
-     1, 90, 1, 0, 3, 0, "group", "Son of Zinedine; switched France->Algeria; wears protective mask"],
+     1, 90, 3, 0, 3, 0, 6.8, -1.02, "group", "high",
+     "Son of Zinedine; conceded a Messi hat-trick in 0-3 loss"],
     ["Johny Placide", "Haiti", 38, 80, "SC Bastia", "Ligue 2", "other_euro", 0.15,
-     1, 90, 1, 0, 4, 0, "group", "Haiti's return after 52 years"],
+     2, 180, 4, 0, 3, 0, 6.3, NA, "group", "high",
+     "Haiti's return after 52 years; eliminated, 0 pts"],
     ["Camilo Vargas", "Colombia", 37, 13, "Atlas", "Liga MX", "non_euro", 0.5,
-     1, 90, 1, 0, 3, 0, "group", "Undisputed #1 since 2023"],
+     1, 90, 1, 0, 2, 0, 5.8, 0.16, "group", "approx",
+     "Error on Uzbekistan's goal in 3-1 win; save total unconfirmed"],
     ["Hernan Galindez", "Ecuador", 39, 24, "Huracan", "Argentine PD", "non_euro", 1.0,
-     1, 90, 0, 1, 3, 0, "group", "Kept clean sheet in shock 0-0 vs Curacao"],
+     2, 180, 1, 1, 8, 0, 7.0, NA, "group", "approx",
+     "CS in 0-0 vs Curacao; vs-Curacao save total unconfirmed"],
     ["Yahia Fofana", "Cote d'Ivoire", 25, 40, "Rizespor", "Super Lig", "other_euro", 5.0,
-     1, 90, 1, 0, 4, 0, "group", "Highest-valued African keeper at the tournament"],
-    ["Luis Mejia", "Panama", 35, 35, "Club Nacional", "Uruguayan PD", "non_euro", 0.3,
-     1, 90, 1, 0, 4, 0, "group", "Panama's 2nd WC; veteran #1"],
-    ["Sergio Rochet", "Uruguay", 33, 15, "Internacional", "Brazilian Serie A", "other_euro", 3.5,
-     1, 90, 0, 1, 3, 0, "group", "Bielsa's #1; reported Boca target"],
+     2, 180, 2, 1, 6, 0, 8.0, 0.33, "group", "high",
+     "Highest-valued African keeper; 8.0 & 5 saves vs Germany"],
+    ["Orlando Mosquera", "Panama", 31, 35, "Sporting SM", "Panama LPF", "non_euro", 0.3,
+     1, 90, 1, 0, 2, 0, 6.5, NA, "group", "high",
+     "Actual Panama starter (over veteran Mejia); 0-1 loss to Ghana"],
+    ["Fernando Muslera", "Uruguay", 40, 15, "Galatasaray", "Super Lig", "other_euro", 0.5,
+     1, 90, 1, 0, 4, 0, 6.8, NA, "group", "approx",
+     "At 40, started the 1-1 vs Saudi over Rochet; made the Kanno save"],
     ["Alireza Beiranvand", "Iran", 33, 21, "Tractor", "Persian Gulf Pro", "non_euro", 0.65,
-     1, 90, 1, 0, 4, 0, "group", "3rd straight World Cup; famous penalty saver"],
-    ["Nawaf Al-Aqidi", "Saudi Arabia", 26, 58, "Al-Nassr", "Saudi Pro League", "non_euro", 0.7,
-     1, 90, 1, 0, 4, 0, "group", "Displaced 2022 hero Al-Owais as #1"],
-    # established / elite reference points
+     1, 90, 2, 0, 6, 0, 6.8, NA, "group", "high",
+     "3rd straight World Cup; 6 saves (~75%) in 2-2 vs New Zealand"],
+    ["Mohammed Al-Owais", "Saudi Arabia", 34, 58, "Al-Hilal", "Saudi Pro League", "non_euro", 1.0,
+     1, 90, 1, 0, 9, 0, 7.5, NA, "group", "high",
+     "Actual starter (Al-Aqidi injured); tournament-leading 9 saves vs Uruguay"],
+    # ---- established / elite reference points ----
     ["Zion Suzuki", "Japan", 23, 19, "Parma", "Serie A", "top5", 24.0,
-     1, 90, 2, 0, 5, 0, "group", "Most valuable keeper in the field; first Japanese keeper in Serie A"],
+     2, 180, 2, 1, 6, 0, 7.0, NA, "group", "approx",
+     "Most valuable keeper in the field; CS vs Tunisia"],
     ["Emiliano Martinez", "Argentina", 33, 1, "Aston Villa", "Premier League", "top5", 15.0,
-     1, 90, 1, 0, 3, 0, "group", "Reigning 2022 Golden Glove"],
+     1, 90, 0, 1, 0, 0, 7.0, NA, "group", "high",
+     "Reigning Golden Glove; CS vs Algeria (0 shots on target faced)"],
     ["Alisson", "Brazil", 33, 5, "Liverpool", "Premier League", "top5", 14.0,
-     2, 180, 1, 1, 6, 0, "group", "Ancelotti's #1; third World Cup"],
+     2, 180, 1, 1, 5, 0, 7.2, NA, "group", "high",
+     "CS vs Haiti; late double save to earn 1-1 vs Morocco"],
     ["Matt Freese", "USA", 27, 16, "New York City FC", "MLS", "non_euro", 2.0,
-     1, 90, 1, 0, 4, 0, "group", "Host nation #1; 3 shootout saves in 2025 Gold Cup"],
+     2, 180, 1, 1, 3, 0, 6.8, NA, "group", "high",
+     "Won the job over Turner; CS vs Australia, USA clinched group"],
     ["Raul Rangel", "Mexico", 26, 17, "Chivas", "Liga MX", "non_euro", 6.5,
-     2, 180, 0, 2, 6, 0, "group", "Surprise host #1; two clean sheets to open"],
+     2, 180, 0, 2, 5, 0, 7.5, NA, "group", "approx",
+     "Two clean sheets; first team to clinch Round of 32; save totals approx"],
     ["Maxime Crepeau", "Canada", 32, 30, "Orlando City", "MLS", "non_euro", 1.8,
-     1, 90, 1, 0, 4, 0, "group", "Host #1 over MLS GK of the Year St. Clair"],
+     2, 180, 1, 1, 2, 0, 6.8, NA, "group", "high",
+     "CS vs Qatar (6-0); 2 saves in 1-1 vs Bosnia"],
 ]
 
 
 def build_historical() -> pd.DataFrame:
     df = pd.DataFrame(ROWS, columns=COLS)
     assert df[["player", "nation", "wc_year"]].duplicated().sum() == 0, "dup keeper-tournaments"
+    return df
+
+
+def _norm(s: str) -> str:
+    """Lowercase, strip accents — for fuzzy name/nation matching."""
+    s = unicodedata.normalize("NFKD", str(s))
+    return "".join(c for c in s if not unicodedata.combining(c)).lower().strip()
+
+
+def enrich_with_statsbomb(df: pd.DataFrame) -> pd.DataFrame:
+    """Overlay REAL StatsBomb shot-based metrics onto 2018/2022 keeper rows.
+
+    StatsBomb open data only covers 2018 & 2022, so 2006-2014 rows keep their
+    researched values. Within a (nation, year) the team's starting keeper is the
+    row facing the most on-target shots, which is exactly our (starter) keepers.
+    Replaces saves / save_pct / goals_conceded with measured values, sets
+    pen_saves to in-game + shootout saves, and adds a real `xg_prevented` column
+    (pre-shot xG balance — a coarser cousin of PSxG-GA; see ingest_statsbomb.py).
+    """
+    sb_path = ROOT / "data" / "processed" / "statsbomb_gk_metrics.csv"
+    df = df.copy()
+    df["xg_prevented"] = NA
+    df["sot_faced"] = NA
+    if not sb_path.exists():
+        print("  (StatsBomb metrics not found — run src/ingest_statsbomb.py first; "
+              "keeping researched values.)")
+        return df
+
+    sb = pd.read_csv(sb_path)
+    sb["nation_n"] = sb["nation"].map(_norm)
+    sb["player_n"] = sb["player"].map(_norm)
+    matched = 0
+    for yr in (2018, 2022):
+        sub = sb[sb.wc_year == yr]
+        for idx, row in df[df.wc_year == yr].iterrows():
+            cand = sub[sub.nation_n == _norm(row["nation"])]
+            if cand.empty:
+                continue
+            # Prefer a surname match (handles nations with 2+ keepers, e.g.
+            # Egypt's El-Hadary vs El Shenawy); fall back to most-shots starter.
+            tokens = [t for t in _norm(row["player"]).replace("-", " ").split()
+                      if len(t) >= 3]
+            surname = tokens[-1] if tokens else ""
+            named = cand[cand["player_n"].str.contains(surname, regex=False)] if surname else cand
+            pick_from = named if not named.empty else cand
+            best = pick_from.loc[pick_from["sot_faced"].idxmax()]  # the starter
+            df.at[idx, "saves"] = int(best["saves"])
+            df.at[idx, "goals_conceded"] = int(best["goals_conceded"])
+            df.at[idx, "save_pct"] = float(best["save_pct"])
+            df.at[idx, "pen_saves"] = int(best["pen_saves"]) + int(best["so_pen_saves"])
+            df.at[idx, "xg_prevented"] = float(best["xg_prevented"])
+            df.at[idx, "sot_faced"] = int(best["sot_faced"])
+            df.at[idx, "data_confidence"] = "high (StatsBomb)"
+            df.at[idx, "notes"] = str(row["notes"]) + " | stats: StatsBomb open data"
+            matched += 1
+    print(f"  Enriched {matched} 2018/2022 keeper rows with real StatsBomb metrics.")
     return df
 
 
@@ -270,6 +358,7 @@ def build_2026() -> pd.DataFrame:
 
 def main() -> None:
     hist = build_historical()
+    hist = enrich_with_statsbomb(hist)
     hist.to_csv(ROOT / "data" / "goalkeepers_worldcups.csv", index=False)
     build_rankings(hist).to_csv(ROOT / "data" / "fifa_rankings.csv", index=False)
     build_2026().to_csv(ROOT / "data" / "goalkeepers_2026.csv", index=False)

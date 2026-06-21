@@ -1,0 +1,82 @@
+player,nation,wc_year,matches,sot_faced,saves,goals_conceded,xg_faced,pen_saves,so_pen_saves,save_pct,xg_prevented
+Kasper Schmeichel,Denmark,2018,4,21,19,2,2.83244041,1,2,90.5,0.83
+Hyeon-Woo Jo,South Korea,2018,3,15,12,3,3.6775183719999998,0,0,80.0,0.68
+Aymen Mathlouthi,Tunisia,2018,1,4,4,0,0.3307681575,0,0,100.0,0.33
+Pedro David Gallese Quiróz,Peru,2018,3,9,7,2,2.310946795,0,0,77.8,0.31
+Francisco Guillermo Ochoa Magaña,Mexico,2018,4,30,25,5,5.2434657187,0,0,83.3,0.24
+Łukasz Fabiański,Poland,2018,1,3,3,0,0.133415739,0,0,100.0,0.13
+Lovre Kalinić,Croatia,2018,1,6,5,1,1.1015303179999998,0,0,83.3,0.1
+Steve Mandanda,France,2018,1,1,1,0,0.008512876,0,0,100.0,0.01
+Essam Kamal Tawfik El Hadary,Egypt,2018,1,7,5,2,1.8984965870000001,1,0,71.4,-0.1
+Mohammed Khalil Al Owais,Saudi Arabia,2018,1,3,2,1,0.807209895,0,0,66.7,-0.19
+David Ospina Ramírez,Colombia,2018,4,13,10,3,2.6407392169999997,0,1,76.9,-0.36
+Mouez Hassen,Tunisia,2018,1,3,2,1,0.492136815,0,0,66.7,-0.51
+Alireza Safar Beiranvand,Iran,2018,3,10,8,2,1.4424640088,1,0,80.0,-0.56
+Yasser Abdullah Al Mosailem,Saudi Arabia,2018,1,1,0,1,0.10416558,0,0,0.0,-0.9
+Francis Odinaka Uzoho,Nigeria,2018,3,8,5,3,1.668913867,0,0,62.5,-1.33
+Munir Mohand Mohamedi,Morocco,2018,3,7,4,3,1.6080610929999999,0,0,57.1,-1.39
+Manuel Neuer,Germany,2018,3,15,11,4,2.55975895,0,0,73.3,-1.44
+Alisson Ramsés Becker,Brazil,2018,4,7,5,2,0.496389721,0,0,71.4,-1.5
+Igor Akinfeev,Russia,2018,4,21,16,5,3.424517951,0,3,76.2,-1.58
+Mohamed El Sayed Mohamed El Shenawy Gomaa,Egypt,2018,2,8,5,3,1.122375614,0,0,62.5,-1.88
+Wojciech Szczęsny,Poland,2018,2,4,0,4,2.0383835,0,0,0.0,-1.96
+Farouk Ben Mustapha,Tunisia,2018,2,15,9,6,3.956636417,0,0,60.0,-2.04
+Vladimir Stojković,Serbia,2018,3,15,11,4,1.9082165127,0,0,73.3,-2.09
+Néstor Fernando Muslera Micol,Uruguay,2018,5,12,9,3,0.7136810875,0,0,75.0,-2.29
+Mathew Ryan,Australia,2018,3,12,8,4,1.669512128,0,0,66.7,-2.33
+Keylor Navas Gamboa,Costa Rica,2018,3,14,9,5,2.62195189,0,0,64.3,-2.38
+Yann Sommer,Switzerland,2018,4,16,12,4,1.589019787,0,0,75.0,-2.41
+Wilfredo Daniel Caballero,Argentina,2018,2,7,3,4,1.403651616,0,0,42.9,-2.6
+Khadim N'Diaye,Senegal,2018,3,8,4,4,1.38969057,0,0,50.0,-2.61
+Franco Armani,Argentina,2018,2,7,2,5,2.122128752,0,0,28.6,-2.88
+Hannes Þór Halldórsson,Iceland,2018,3,13,8,5,2.013082821,1,0,61.5,-2.99
+Hugo Lloris,France,2018,6,17,11,6,2.9355335869999997,0,0,64.7,-3.06
+Robin Olsen,Sweden,2018,4,13,9,4,0.8201487260000001,0,0,69.2,-3.18
+Thibaut Courtois,Belgium,2018,7,31,25,6,2.72210222,0,0,80.6,-3.28
+David de Gea Quintana,Spain,2018,3,7,1,6,2.526400256,0,0,14.3,-3.47
+Rui Pedro dos Santos Patrício,Portugal,2018,4,14,8,6,2.475598676,0,0,57.1,-3.52
+Jordan Pickford,England,2018,7,24,16,8,4.015622209,0,1,66.7,-3.98
+Abdullah Ibrahim Al Maiouf,Saudi Arabia,2018,1,7,2,5,0.960190879,0,0,28.6,-4.04
+Eiji Kawashima,Japan,2018,4,19,12,7,2.5106158480000005,0,0,63.2,-4.49
+Danijel Subašić,Croatia,2018,6,21,14,7,2.415498912,0,4,66.7,-4.58
+Jaime Manuel Penedo Cano,Panama,2018,3,19,8,11,5.699128314,0,0,42.1,-5.3
+Munir Mohand Mohamedi,Morocco,2022,1,4,4,0,0.260730107,0,0,100.0,0.26
+Thibaut Courtois,Belgium,2022,3,11,9,2,2.026816093,1,0,81.8,0.03
+Alireza Safar Beiranvand,Iran,2022,1,5,4,1,0.846826163,0,0,80.0,-0.15
+Sergio Rochet Álvarez,Uruguay,2022,2,7,5,2,1.8160407016,1,0,71.4,-0.18
+André Onana,Cameroon,2022,1,3,2,1,0.798576985,0,0,66.7,-0.2
+Andries Noppert,Netherlands,2022,5,22,18,4,3.5542428655,0,0,81.8,-0.45
+Aymen Dahmen,Tunisia,2022,3,10,9,1,0.41167545400000005,0,0,90.0,-0.59
+Steve Mandanda,France,2022,1,3,2,1,0.273592263,0,0,66.7,-0.73
+Wojciech Szczęsny,Poland,2022,4,30,25,5,4.234829507400001,2,0,83.3,-0.77
+Ederson Santana de Moraes,Brazil,2022,1,3,2,1,0.20704215,0,0,66.7,-0.79
+Devis Rogers Epassy Mboka,Cameroon,2022,2,13,10,3,1.980177858,0,0,76.9,-1.02
+Saad Abdullah Al Sheeb,Qatar,2022,1,3,1,2,0.95122833,0,0,33.3,-1.05
+Gregor Kobel,Switzerland,2022,1,4,2,2,0.82616502,0,0,50.0,-1.17
+Mohammed Khalil Al Owais,Saudi Arabia,2022,3,19,14,5,3.820221639,0,0,73.7,-1.18
+Unai Simón Mendibil,Spain,2022,3,10,7,3,1.7824917370000002,0,1,70.0,-1.22
+Matthew Charles Turner,United States,2022,4,13,9,4,2.4698248769999998,0,0,69.2,-1.53
+Francisco Guillermo Ochoa Magaña,Mexico,2022,3,6,3,3,1.439650007,1,0,50.0,-1.56
+Shūichi Gonda,Japan,2022,4,19,15,4,2.3871198669999996,0,0,78.9,-1.61
+Alisson Ramsés Becker,Brazil,2022,2,7,5,2,0.35985037140000004,0,0,71.4,-1.64
+Diogo Meireles Costa,Portugal,2022,5,18,12,6,4.30963945,0,0,66.7,-1.69
+Daniel Ward,Wales,2022,1,7,4,3,1.267725055,0,0,57.1,-1.73
+Kasper Schmeichel,Denmark,2022,3,11,8,3,1.229604326,0,0,72.7,-1.77
+Dominik Livaković,Croatia,2022,7,31,24,7,5.1884423528,0,4,77.4,-1.81
+Hernán Ismael Galíndez,Ecuador,2022,2,4,1,3,1.1090545349999998,0,0,25.0,-1.89
+Jordan Pickford,England,2022,5,11,7,4,1.92560148,0,0,63.6,-2.07
+Yassine Bounou,Morocco,2022,5,11,7,4,1.9289986882,0,2,63.6,-2.07
+Manuel Neuer,Germany,2022,3,12,8,4,1.8960872635,0,0,66.7,-2.1
+Wayne Hennessey,Wales,2022,2,7,4,3,0.74178587,0,0,57.1,-2.26
+Hugo Lloris,France,2022,6,24,17,7,4.633766833,0,0,70.8,-2.37
+Vanja Milinković Savić,Serbia,2022,3,24,16,8,4.9289631334,0,0,66.7,-3.07
+Meshaal Aissa Barsham,Qatar,2022,2,8,3,5,1.656528842,0,0,37.5,-3.34
+Mathew Ryan,Australia,2022,4,19,13,6,2.645025216,0,0,68.4,-3.35
+Lawrence Ati-Zigi,Ghana,2022,3,17,10,7,3.4722428336,0,0,58.8,-3.53
+Seung-Gyu Kim,South Korea,2022,4,20,12,8,4.017226924,0,0,60.0,-3.98
+Milan Borjan,Canada,2022,3,15,8,7,2.7968578600000003,0,0,53.3,-4.2
+Damián Emiliano Martínez,Argentina,2022,6,13,6,7,2.765674789,0,3,46.2,-4.23
+Yann Sommer,Switzerland,2022,3,19,12,7,2.7743538545,0,0,63.2,-4.23
+Seyed Hossein Hosseini,Iran,2022,2,11,5,6,1.738643926,0,0,45.5,-4.26
+Edouard Mendy,Senegal,2022,4,14,7,7,2.624982299,0,0,50.0,-4.38
+Keylor Navas Gamboa,Costa Rica,2022,3,22,11,11,4.611309046000001,0,0,50.0,-6.39
