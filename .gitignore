@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# Data science artifacts
+*.pkl
+.cache/
+
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Keep processed data and figures tracked (they are deliverables),
+# but ignore large/temp scratch files
+/tmp_scratch/
