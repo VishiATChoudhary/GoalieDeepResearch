@@ -15,13 +15,17 @@ World Cup dashboard ranking which keepers are likeliest to break out.
    is robust across every leave-one-tournament-out fold. Equally heroic *older* keepers
    (Subašić 33, Howard 35, Akinfeev 32, Gonda 33) got reputation but **no move**; the
    converters were young/marketable (Navas 27, Kawashima 27, Neuer 24, Ospina 25).
-2. **The smaller-nation "shop window" is real but conditional.** The mechanism (information
-   asymmetry — an under-scouted keeper's value moves more on new information) is strongly
-   supported by case studies (Keylor Navas → Real Madrid; Bono → Al-Hilal ~€21m; Kawashima →
-   Belgium). But in our n=40 sample the *binary* success rate is similar across tiers (~33%),
-   and the smaller-vs-elite market-value-growth gap is **not** statistically significant
-   (Mann–Whitney p≈0.87). The effect lives in **magnitude + the tail**, not the average — and
-   is gated by age, contract status, and a deep tournament run.
+2. **The smaller-nation "shop window" is real but conditional — and mostly a proxy.** The
+   mechanism (information asymmetry — an under-scouted keeper's value moves more on new
+   information) is strongly supported by case studies (Keylor Navas → Real Madrid; Bono →
+   Al-Hilal ~€21m; Kawashima → Belgium). But in our n=40 sample the *binary* success rate is
+   similar across tiers (~33%), the smaller-vs-elite value-growth gap is **not** significant
+   (Mann–Whitney p≈0.87), and in a Ridge model of value-growth *magnitude* the controlled
+   `non_elite_nation` effect is **≈0 once age, base value, and actual shot-stopping (save %,
+   goals conceded) are included**. In other words the "smaller-nation premium" is largely an
+   *age + under-valuation + performance* effect wearing a nationality costume; the real bumps
+   go to **young, cheap, well-performing** keepers — who happen, in the tail, to be from
+   non-elite nations.
 3. **Tournament keeping has low predictive signal** (model ROC-AUC ≈ 0.60). This is itself a
    documented finding (shot-stopping barely repeats season-to-season), and it is exactly the
    market inefficiency the shop-window effect exploits — markets overweight a few vivid saves.

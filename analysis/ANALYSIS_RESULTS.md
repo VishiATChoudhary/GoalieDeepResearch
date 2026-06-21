@@ -59,6 +59,50 @@ forest   acc=0.53  roc_auc=0.60  base_rate=0.35  n=40
 | team_stage_rank    |            0      |     0.002  |
 | clean_sheets       |           -0.0014 |     0.0017 |
 
+## 4. What drives the *size* of the post-WC value bump
+
+Ridge regression on market-value growth % (standardized features), n=39, cross-validated R²=-0.76 (small sample — interpret signs/ranking, not fit).
+
+| feature            |   ridge_coef_per_sd |
+|:-------------------|--------------------:|
+| age_at_wc          |               -8.58 |
+| goals_conceded     |               -6.04 |
+| save_pct           |                4.22 |
+| pen_saves          |               -3.31 |
+| mv_pre_eur_m       |               -3.16 |
+| club_pre_tier_rank |               -3.08 |
+| ga_per90           |               -2.8  |
+| saves_per90        |                2.74 |
+| team_stage_rank    |               -2.63 |
+| minutes            |               -2.06 |
+| matches            |               -1.94 |
+| fifa_rank_pre      |                1.93 |
+| clean_sheets       |                0.6  |
+| non_elite_nation   |                0.23 |
+| saves              |                0.12 |
+
+*The `non_elite_nation` coefficient (`+0.2` pp of value growth per SD, after controlling for age/club/performance) is the smaller-nation 'showcase premium'. It is small relative to the shot-stopping and age effects — i.e. once you account for how well a keeper actually played and how old they are, nationality adds little to the value bump.*
+
+### Gradient-boosted permutation importance for value growth
+
+| feature            |   perm_importance_r2 |
+|:-------------------|---------------------:|
+| save_pct           |               0.4794 |
+| saves_per90        |               0.2985 |
+| age_at_wc          |               0.2823 |
+| fifa_rank_pre      |               0.0961 |
+| saves              |               0.0911 |
+| mv_pre_eur_m       |               0.0447 |
+| ga_per90           |               0.0324 |
+| club_pre_tier_rank |               0.0265 |
+| team_stage_rank    |               0.0088 |
+| minutes            |               0.0069 |
+| clean_sheets       |               0.003  |
+| goals_conceded     |               0.0018 |
+| pen_saves          |               0.0009 |
+| matches            |               0.0005 |
+| non_elite_nation   |               0.0001 |
+
 ## 3. Sensitivity analysis
 
 ### (a) Success definition — vary the market-value growth threshold

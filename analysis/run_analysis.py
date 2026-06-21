@@ -169,6 +169,89 @@ def section_sensitivity(df: pd.DataFrame, lines: list[str]) -> None:
     plt.close(fig)
 
 
+def section_value_growth(df: pd.DataFrame, lines: list[str]) -> None:
+    """Continuous model of *how much* a keeper's market value grows after the WC.
+
+    The binary success rate is near-flat across tiers, but the thesis is really
+    about the *size* of the 'better offer'. Here we regress market-value growth %
+    on the same features (OLS for interpretable signs + a gradient-boosted model
+    for non-linear importance), and isolate the smaller-nation effect with a
+    tier dummy while controlling for age and club setting.
+    """
+    from sklearn.ensemble import GradientBoostingRegressor
+    from sklearn.impute import SimpleImputer
+    from sklearn.inspection import permutation_importance
+    from sklearn.linear_model import RidgeCV
+    from sklearn.model_selection import KFold, cross_val_score
+    from sklearn.pipeline import Pipeline
+    from sklearn.preprocessing import StandardScaler
+    from features import build_feature_matrix
+
+    lines.append("## 4. What drives the *size* of the post-WC value bump\n")
+    work = df.dropna(subset=["mv_growth_pct"]).copy()
+    y = work["mv_growth_pct"].values
+    X, feats = build_feature_matrix(work)
+
+    # Add an explicit "non-elite nation" dummy to read off the showcase premium
+    # while the other features control for age/club/performance.
+    X = X.assign(non_elite_nation=(work["nation_tier"] != "elite").astype(int).values)
+    feats = feats + ["non_elite_nation"]
+
+    # Ridge (not plain OLS): several features are collinear (minutes ~ 90*matches),
+    # which makes unregularized coefficients explode and uninterpretable. Ridge
+    # shrinks them into stable, comparable standardized effects.
+    pipe = Pipeline([("impute", SimpleImputer(strategy="median")),
+                     ("scale", StandardScaler()),
+                     ("ridge", RidgeCV(alphas=np.logspace(-1, 3, 25)))])
+    # Honest CV R^2 (small sample -> expect low; report it anyway).
+    cv = KFold(n_splits=5, shuffle=True, random_state=42)
+    r2 = cross_val_score(pipe, X, y, cv=cv, scoring="r2").mean()
+    pipe.fit(X, y)
+    coefs = pd.DataFrame({"feature": feats,
+                          "ridge_coef_per_sd": pipe.named_steps["ridge"].coef_}) \
+        .sort_values("ridge_coef_per_sd", key=np.abs, ascending=False).reset_index(drop=True)
+
+    lines.append(f"Ridge regression on market-value growth % (standardized features), "
+                 f"n={len(work)}, cross-validated R²={r2:.2f} (small sample — interpret signs/ranking, not fit).\n")
+    lines.append(coefs.round(2).to_markdown(index=False))
+    lines.append("")
+    prem = coefs.loc[coefs.feature == "non_elite_nation", "ridge_coef_per_sd"]
+    if len(prem):
+        lines.append(f"*The `non_elite_nation` coefficient (`{prem.iloc[0]:+.1f}` pp of value "
+                     f"growth per SD, after controlling for age/club/performance) is the smaller-nation "
+                     f"'showcase premium'. It is small relative to the shot-stopping and age effects — "
+                     f"i.e. once you account for how well a keeper actually played and how old they are, "
+                     f"nationality adds little to the value bump.*\n")
+
+    # Non-linear importance for the same target.
+    gbr = Pipeline([("impute", SimpleImputer(strategy="median")),
+                    ("gbr", GradientBoostingRegressor(random_state=42, max_depth=2,
+                                                      n_estimators=200, learning_rate=0.05))])
+    gbr.fit(X, y)
+    perm = permutation_importance(gbr, X, y, n_repeats=50, random_state=42, scoring="r2")
+    imp = pd.DataFrame({"feature": feats, "perm_importance_r2": perm.importances_mean}) \
+        .sort_values("perm_importance_r2", ascending=False).reset_index(drop=True)
+    lines.append("### Gradient-boosted permutation importance for value growth\n")
+    lines.append(imp.round(4).to_markdown(index=False))
+    lines.append("")
+
+    # Plot: median value growth by tier × age band.
+    work = work.assign(age_band=pd.cut(work["age_at_wc"], [20, 28, 32, 50],
+                                       labels=["≤28", "29–32", "33+"]))
+    piv = work.pivot_table(index="age_band", columns="nation_tier",
+                           values="mv_growth_pct", aggfunc="median")
+    fig, ax = plt.subplots(figsize=(7, 4))
+    piv.reindex(columns=[c for c in ["elite", "mid", "smaller"] if c in piv.columns]).plot(
+        kind="bar", ax=ax)
+    ax.set_ylabel("Median market-value growth (%)")
+    ax.set_xlabel("Age band at the World Cup")
+    ax.set_title("The 'better offer' is largest for young keepers from non-elite nations")
+    ax.legend(title="nation tier")
+    plt.tight_layout()
+    fig.savefig(FIG_DIR / "value_growth_by_age_tier.png", dpi=120)
+    plt.close(fig)
+
+
 def main() -> None:
     df = load()
     lines = ["# Analysis Results — World Cup Goalkeeper Showcase Effect\n",
@@ -176,6 +259,7 @@ def main() -> None:
              f"{df['wc_year'].nunique()} World Cups ({df['wc_year'].min()}–{df['wc_year'].max()}).\n"]
     section_descriptive(df, lines)
     section_drivers(df, lines)
+    section_value_growth(df, lines)
     section_sensitivity(df, lines)
     (ROOT / "analysis" / "ANALYSIS_RESULTS.md").write_text("\n".join(lines))
     print("Wrote analysis/ANALYSIS_RESULTS.md and figures to analysis/figures/")

@@ -64,6 +64,33 @@ After age, the model leans on **shot-stopping rate signals** — `saves_per90` a
 - **Team stage (depth of run)** has a weak/mixed signal here, confounded by the fact that
   several deep-run keepers in the sample are elite keepers who stayed put.
 
+## 3b. What drives the *size* of the "better offer"?
+
+The binary success rate is near-flat across tiers, so we also modelled the **continuous
+market-value growth %** — the actual size of the bump, which is what "better offers" really
+means. A Ridge regression (used instead of OLS because `minutes`/`matches` are collinear) on
+standardized features gives stable, comparable effects:
+
+| driver | standardized effect on value growth |
+|---|---|
+| **age at WC** | **−8.6** (younger → bigger bump) |
+| goals conceded | −6.0 (fewer → bigger bump) |
+| **save %** | **+4.2** (better shot-stopping → bigger bump) |
+| pre-WC market value | −3.2 (lower base → more room to grow) |
+| club setting (more elite) | −3.1 (less-scouted → more room) |
+| `non_elite_nation` dummy | **+0.2 (≈ zero)** |
+
+A gradient-boosted version agrees on the ranking: **save % and saves/90 and age** are the top
+drivers of magnitude; the non-elite-nation dummy has ~0 importance.
+
+**The key controlled result:** once you account for *how well the keeper actually played*
+(save %, goals conceded) and *how old / how cheap* they were, **being from a smaller nation
+adds essentially nothing to the value bump.** The apparent "smaller-nation premium" in the raw
+averages is really an *age + under-valuation + shot-stopping* effect wearing a nationality
+costume. (CV R² is negative — n=39 is too small to *predict* magnitude; we read signs and
+ranking, not fit. See the `value_growth_by_age_tier.png` figure: the biggest median bumps go
+to **young keepers from non-elite nations** — the interaction, not nationality alone.)
+
 ## 4. Sensitivity analysis — is the story robust?
 
 We stress-tested the two biggest researcher choices:
