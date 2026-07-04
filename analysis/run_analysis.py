@@ -33,6 +33,27 @@ import model as M  # noqa: E402
 FIG_DIR = ROOT / "analysis" / "figures"
 FIG_DIR.mkdir(parents=True, exist_ok=True)
 
+# Colour-blind-safe (Okabe–Ito) palette, assigned to nation tiers in fixed order
+# and reused across every figure so a tier is always the same colour.
+TIER_COLOR = {"elite": "#0072B2", "mid": "#E69F00", "smaller": "#009E73"}
+ACCENT = "#0072B2"
+
+plt.rcParams.update({
+    "figure.autolayout": True,      # tight_layout everywhere -> no clipped labels
+    "axes.spines.top": False,
+    "axes.spines.right": False,
+    "font.size": 11,
+    "axes.titlesize": 13,
+    "axes.titleweight": "bold",
+})
+
+
+def _bar_value_labels(ax, fmt="{:.2f}", pad=3, horizontal=False):
+    """Print each bar's value at its tip so we never need a busy y-grid."""
+    for c in ax.containers:
+        ax.bar_label(c, fmt=fmt, padding=pad, fontsize=9,
+                     label_type="edge")
+
 
 def load() -> pd.DataFrame:
     df = pd.read_csv(ROOT / "data" / "goalkeepers_worldcups.csv")
@@ -63,13 +84,17 @@ def section_descriptive(df: pd.DataFrame, lines: list[str]) -> None:
         lines.append(f"*Mann–Whitney U test (smaller/mid MV growth > elite):* "
                      f"U={u:.0f}, p={p:.3f}, n_small={len(small)}, n_elite={len(elite)}\n")
 
-    # Plot
-    fig, ax = plt.subplots(figsize=(6, 4))
-    g["success_rate"].plot(kind="bar", ax=ax, color=["#4C72B0", "#55A868", "#C44E52"])
+    # Plot — horizontal x labels (short, no rotation needed), value on each bar,
+    # sample size annotated under each tier so the reader knows it's a small n.
+    fig, ax = plt.subplots(figsize=(6.5, 4.2))
+    tiers = list(g.index)
+    ax.bar(tiers, g["success_rate"], color=[TIER_COLOR[t] for t in tiers], width=0.6)
     ax.set_ylabel("Showcase-success rate")
     ax.set_title("Post-WC showcase success by nation tier")
     ax.set_ylim(0, 1)
-    plt.tight_layout()
+    ax.set_xticks(range(len(tiers)))
+    ax.set_xticklabels([f"{t}\n(n={int(g.loc[t, 'n'])})" for t in tiers])
+    _bar_value_labels(ax, fmt="{:.0%}")
     fig.savefig(FIG_DIR / "success_by_tier.png", dpi=120)
     plt.close(fig)
 
@@ -91,13 +116,25 @@ def section_drivers(df: pd.DataFrame, lines: list[str]) -> M.TrainedModels:
     lines.append(models.perm_importance.round(4).to_markdown(index=False))
     lines.append("")
 
-    # Plot permutation importance
+    # Plot permutation importance — horizontal bars keep long feature names readable,
+    # error bars show the permutation SD. Pretty-print the snake_case names.
+    pretty = {
+        "age_at_wc": "Age at WC", "fifa_rank_pre": "FIFA rank (pre)",
+        "saves": "Saves", "mv_pre_eur_m": "Market value (pre)",
+        "ga_per90": "Goals against /90", "save_pct": "Save %",
+        "minutes": "Minutes", "club_pre_tier_rank": "Club-league tier",
+        "saves_per90": "Saves /90", "goals_conceded": "Goals conceded",
+        "clean_sheets": "Clean sheets", "team_stage_rank": "Team stage reached",
+        "pen_saves": "Penalty saves",
+    }
     pi = models.perm_importance.head(10).iloc[::-1]
-    fig, ax = plt.subplots(figsize=(7, 5))
-    ax.barh(pi["feature"], pi["perm_importance"], xerr=pi["perm_std"], color="#4C72B0")
+    labels = [pretty.get(f, f) for f in pi["feature"]]
+    fig, ax = plt.subplots(figsize=(7.5, 5))
+    ax.barh(labels, pi["perm_importance"], xerr=pi["perm_std"],
+            color=ACCENT, error_kw=dict(ecolor="#444", lw=1))
     ax.set_xlabel("Permutation importance (mean ROC-AUC drop)")
     ax.set_title("Driving factors for goalkeeper showcase success")
-    plt.tight_layout()
+    ax.margins(x=0.12)  # room so bar-tip labels never collide with the frame
     fig.savefig(FIG_DIR / "feature_importance.png", dpi=120)
     plt.close(fig)
     return models
@@ -156,15 +193,20 @@ def section_sensitivity(df: pd.DataFrame, lines: list[str]) -> None:
     lines.append(pd.DataFrame(rows).to_markdown(index=False))
     lines.append("")
 
-    # Plot threshold sensitivity
-    fig, ax = plt.subplots(figsize=(7, 4))
-    for col, c in [("smaller", "#C44E52"), ("mid", "#55A868"), ("elite", "#4C72B0")]:
-        ax.plot(sens_thr["threshold_%"], sens_thr[col], marker="o", label=col, color=c)
+    # Plot threshold sensitivity — direct end-of-line labels instead of a legend box
+    # so nothing overlaps the lines; tiers keep their fixed colours.
+    fig, ax = plt.subplots(figsize=(7.5, 4.4))
+    x = sens_thr["threshold_%"]
+    for col in ["smaller", "mid", "elite"]:
+        ax.plot(x, sens_thr[col], marker="o", color=TIER_COLOR[col], lw=2)
+        ax.annotate(col, xy=(x.iloc[-1], sens_thr[col].iloc[-1]),
+                    xytext=(6, 0), textcoords="offset points",
+                    va="center", color=TIER_COLOR[col], fontweight="bold")
     ax.set_xlabel("MV-growth success threshold (%)")
     ax.set_ylabel("Showcase-success rate")
-    ax.set_title("Sensitivity of the smaller-nation effect to success definition")
-    ax.legend()
-    plt.tight_layout()
+    ax.set_title("Smaller-nation effect vs. how we define 'success'")
+    ax.set_xlim(x.min() - 5, x.max() + 22)   # space for the right-hand labels
+    ax.margins(y=0.1)
     fig.savefig(FIG_DIR / "sensitivity_threshold.png", dpi=120)
     plt.close(fig)
 
@@ -235,19 +277,24 @@ def section_value_growth(df: pd.DataFrame, lines: list[str]) -> None:
     lines.append(imp.round(4).to_markdown(index=False))
     lines.append("")
 
-    # Plot: median value growth by tier × age band.
+    # Plot: median value growth by tier × age band — grouped bars, fixed tier
+    # colours, horizontal x labels, a zero reference line and value labels.
     work = work.assign(age_band=pd.cut(work["age_at_wc"], [20, 28, 32, 50],
                                        labels=["≤28", "29–32", "33+"]))
     piv = work.pivot_table(index="age_band", columns="nation_tier",
-                           values="mv_growth_pct", aggfunc="median")
-    fig, ax = plt.subplots(figsize=(7, 4))
-    piv.reindex(columns=[c for c in ["elite", "mid", "smaller"] if c in piv.columns]).plot(
-        kind="bar", ax=ax)
+                           values="mv_growth_pct", aggfunc="median", observed=False)
+    cols = [c for c in ["elite", "mid", "smaller"] if c in piv.columns]
+    piv = piv.reindex(columns=cols)
+    fig, ax = plt.subplots(figsize=(7.6, 4.6))
+    piv.plot(kind="bar", ax=ax, color=[TIER_COLOR[c] for c in cols],
+             width=0.78, rot=0, legend=False)
+    ax.axhline(0, color="#888", lw=1)
     ax.set_ylabel("Median market-value growth (%)")
     ax.set_xlabel("Age band at the World Cup")
-    ax.set_title("The 'better offer' is largest for young keepers from non-elite nations")
-    ax.legend(title="nation tier")
-    plt.tight_layout()
+    ax.set_title("Biggest value bump: young keepers from non-elite nations")
+    _bar_value_labels(ax, fmt="{:.0f}%")
+    ax.legend(title="Nation tier", frameon=False, loc="upper right")
+    ax.margins(y=0.16)
     fig.savefig(FIG_DIR / "value_growth_by_age_tier.png", dpi=120)
     plt.close(fig)
 

@@ -18,7 +18,7 @@ Dataset: 45 goalkeeper-tournament rows across 5 World Cups (2006–2022).
 
 ```
 logit    acc=0.64  roc_auc=0.59  base_rate=0.33  n=45
-forest   acc=0.62  roc_auc=0.52  base_rate=0.33  n=45
+forest   acc=0.62  roc_auc=0.49  base_rate=0.33  n=45
 ```
 
 ### Logistic-regression coefficients (standardized; sign = direction)
@@ -44,20 +44,20 @@ forest   acc=0.62  roc_auc=0.52  base_rate=0.33  n=45
 
 | feature            |   perm_importance |   perm_std |
 |:-------------------|------------------:|-----------:|
-| age_at_wc          |            0.0508 |     0.0207 |
-| fifa_rank_pre      |            0.011  |     0.0073 |
-| saves              |            0.0086 |     0.0047 |
-| save_pct           |            0.008  |     0.0057 |
-| saves_per90        |            0.0077 |     0.0048 |
-| mv_pre_eur_m       |            0.0065 |     0.0053 |
-| ga_per90           |            0.0056 |     0.0042 |
-| club_pre_tier_rank |            0.0049 |     0.0029 |
-| minutes            |            0.0034 |     0.0023 |
-| pen_saves          |            0.0023 |     0.0025 |
-| goals_conceded     |            0.002  |     0.0012 |
-| team_stage_rank    |            0.0011 |     0.0014 |
-| matches            |            0      |     0      |
-| clean_sheets       |            0      |     0      |
+| age_at_wc          |            0.0429 |     0.0176 |
+| fifa_rank_pre      |            0.013  |     0.0091 |
+| saves              |            0.0079 |     0.0029 |
+| mv_pre_eur_m       |            0.0075 |     0.0041 |
+| ga_per90           |            0.0073 |     0.0057 |
+| save_pct           |            0.0064 |     0.0052 |
+| minutes            |            0.0052 |     0.0027 |
+| club_pre_tier_rank |            0.0046 |     0.0023 |
+| saves_per90        |            0.0031 |     0.0028 |
+| goals_conceded     |            0.002  |     0.0018 |
+| pen_saves          |            0.0019 |     0.0021 |
+| team_stage_rank    |            0.0005 |     0.0011 |
+| matches            |            0.0004 |     0.0008 |
+| clean_sheets       |            0.0001 |     0.0005 |
 
 ## 4. What drives the *size* of the post-WC value bump
 
@@ -87,20 +87,20 @@ Ridge regression on market-value growth % (standardized features), n=44, cross-v
 
 | feature            |   perm_importance_r2 |
 |:-------------------|---------------------:|
-| save_pct           |               0.5146 |
+| save_pct           |               0.5166 |
 | age_at_wc          |               0.439  |
-| mv_pre_eur_m       |               0.3068 |
+| mv_pre_eur_m       |               0.3072 |
 | saves_per90        |               0.1812 |
-| saves              |               0.0633 |
+| saves              |               0.0632 |
 | club_pre_tier_rank |               0.049  |
-| minutes            |               0.0364 |
-| fifa_rank_pre      |               0.0351 |
+| minutes            |               0.0365 |
+| fifa_rank_pre      |               0.035  |
 | ga_per90           |               0.0249 |
-| goals_conceded     |               0.019  |
-| clean_sheets       |               0.0145 |
-| team_stage_rank    |               0.0128 |
+| goals_conceded     |               0.0191 |
+| clean_sheets       |               0.0144 |
+| team_stage_rank    |               0.0077 |
+| matches            |               0.007  |
 | pen_saves          |               0.0065 |
-| matches            |               0.0031 |
 | non_elite_nation   |               0      |
 
 ## 3. Sensitivity analysis
@@ -129,8 +129,8 @@ Ridge regression on market-value growth % (standardized features), n=44, cross-v
 
 |   held_out_year | top_feature   |   importance |
 |----------------:|:--------------|-------------:|
-|            2006 | age_at_wc     |       0.0318 |
-|            2010 | age_at_wc     |       0.0251 |
-|            2014 | age_at_wc     |       0.0338 |
-|            2018 | fifa_rank_pre |       0.0119 |
-|            2022 | age_at_wc     |       0.0736 |
+|            2006 | age_at_wc     |       0.0369 |
+|            2010 | age_at_wc     |       0.0247 |
+|            2014 | age_at_wc     |       0.0323 |
+|            2018 | age_at_wc     |       0.0101 |
+|            2022 | age_at_wc     |       0.062  |
